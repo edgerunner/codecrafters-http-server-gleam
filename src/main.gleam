@@ -1,5 +1,3 @@
-import gleam/io
-
 import gleam/bytes_builder
 import gleam/erlang/process
 import gleam/option.{None}
