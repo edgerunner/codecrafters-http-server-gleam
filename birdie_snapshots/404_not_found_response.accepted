@@ -1,0 +1,8 @@
+---
+version: 1.1.8
+title: 404 Not Found response
+file: ./test/http/response_test.gleam
+test_name: notfound_response_test
+---
+HTTP/1.1 404 Not Found
+

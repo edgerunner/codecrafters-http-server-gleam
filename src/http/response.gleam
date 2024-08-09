@@ -27,3 +27,7 @@ pub fn header(
 pub fn string_body(previous: BytesBuilder, body: String) -> BytesBuilder {
   bytes_builder.append_string(previous, crlf <> body)
 }
+
+pub fn empty_body(previous: BytesBuilder) {
+  bytes_builder.append_string(previous, crlf)
+}

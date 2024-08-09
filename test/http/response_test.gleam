@@ -13,3 +13,12 @@ pub fn ok_response_test() {
   |> should.be_ok
   |> birdie.snap("OK response")
 }
+
+pub fn notfound_response_test() {
+  response.http404()
+  |> response.empty_body
+  |> bytes_builder.to_bit_array
+  |> bit_array.to_string
+  |> should.be_ok
+  |> birdie.snap("404 Not Found response")
+}
