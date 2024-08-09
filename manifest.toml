@@ -4,6 +4,7 @@
 packages = [
   { name = "argv", version = "1.0.2", build_tools = ["gleam"], requirements = [], otp_app = "argv", source = "hex", outer_checksum = "BA1FF0929525DEBA1CE67256E5ADF77A7CDDFE729E3E3F57A5BDCAA031DED09D" },
   { name = "birdie", version = "1.1.8", build_tools = ["gleam"], requirements = ["argv", "filepath", "glance", "gleam_community_ansi", "gleam_erlang", "gleam_stdlib", "justin", "rank", "simplifile", "trie_again"], otp_app = "birdie", source = "hex", outer_checksum = "D225C0A3035FCD73A88402925A903AAD3567A1515C9EAE8364F11C17AD1805BB" },
+  { name = "file_streams", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "file_streams", source = "hex", outer_checksum = "776E9FA97998D7A6033013A256B11272FD047F1695DCCBFAFBEE3D61FC7E8FD3" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "fs", version = "8.6.1", build_tools = ["rebar3"], requirements = [], otp_app = "fs", source = "hex", outer_checksum = "61EA2BDAEDAE4E2024D0D25C63E44DCCF65622D4402DB4A2DF12868D1546503F" },
   { name = "glacier", version = "1.1.0", build_tools = ["gleam"], requirements = ["argv", "fs", "glacier_gleeunit", "gleam_community_ansi", "gleam_community_colour", "gleam_stdlib", "shellout", "simplifile"], otp_app = "glacier", source = "hex", outer_checksum = "FC194FE584147BA997BAA1D33305A64BFE3F01112DBC70D27A3AC491A4338CC7" },
@@ -30,7 +31,9 @@ packages = [
 ]
 
 [requirements]
+argv = { version = ">= 1.0.2 and < 2.0.0" }
 birdie = { version = ">= 1.1.8 and < 2.0.0" }
+file_streams = { version = ">= 1.0.0 and < 2.0.0" }
 glacier = { version = ">= 1.1.0 and < 2.0.0" }
 gleam_erlang = { version = "~> 0.25" }
 gleam_otp = { version = "~> 0.10" }

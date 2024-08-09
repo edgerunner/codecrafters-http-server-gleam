@@ -1,3 +1,4 @@
+import gleam/bit_array
 import gleam/bytes_builder.{type BytesBuilder}
 import gleam/int
 import gleam/string
@@ -40,6 +41,18 @@ pub fn string_body(
   |> header("Content-Length", string.length(body) |> int.to_string)
   |> bytes_builder.append_string(crlf)
   |> bytes_builder.append_string(body)
+}
+
+pub fn bytes_body(
+  previous: BytesBuilder,
+  body body: BitArray,
+  mime mime: String,
+) -> BytesBuilder {
+  previous
+  |> header("Content-Type", mime)
+  |> header("Content-Length", bit_array.byte_size(body) |> int.to_string)
+  |> bytes_builder.append_string(crlf)
+  |> bytes_builder.append(body)
 }
 
 pub fn empty_body(previous: BytesBuilder) {
