@@ -1,0 +1,20 @@
+---
+version: 1.1.8
+title: Request sample
+file: ./test/http/request_test.gleam
+test_name: parse_sample_test
+---
+Request(
+  Get,
+  Uri(
+    None,
+    None,
+    None,
+    None,
+    "/index.html",
+    None,
+    None,
+  ),
+  [],
+  "",
+)
