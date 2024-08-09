@@ -1,18 +1,10 @@
 import gleam/bit_array
-import gleam/bytes_builder
 import gleam/erlang/process
 import gleam/option.{None}
 import gleam/otp/actor
 import glisten
 import http/request
-
-const crlf = "\r\n"
-
-const http = "HTTP/1.1 "
-
-const http200 = "200 OK"
-
-const http404 = "404 Not Found"
+import http/response
 
 pub fn main() {
   let assert Ok(_) =
@@ -23,15 +15,13 @@ pub fn main() {
           let assert Ok(request) = request.parse(request_string)
 
           let status = case request.uri.path {
-            "/" -> http200
-            _ -> http404
+            "/" -> response.http200
+            _ -> response.http404
           }
 
           let assert Ok(_) =
-            bytes_builder.from_string(http)
-            |> bytes_builder.append_string(status)
-            |> bytes_builder.append_string(crlf)
-            |> bytes_builder.append_string(crlf)
+            status()
+            |> response.empty_body
             |> glisten.send(conn, _)
 
           Nil
