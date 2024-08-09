@@ -9,6 +9,7 @@ pub type Request {
 
 pub type Method {
   Get
+  Post
 }
 
 pub type Header {
@@ -29,14 +30,19 @@ fn http_request() -> Parser(Request, Error) {
   use uri <- do(uri())
   use _ <- do(party.string(" HTTP/1.1\r\n"))
   use headers <- do(headers())
-  Request(method: method, uri: uri, headers: headers, body: "")
+  use body <- do(body())
+  Request(method: method, uri: uri, headers: headers, body: body)
   |> party.return
 }
 
 fn method() -> Parser(Method, Error) {
-  use _ <- do(party.string("GET"))
+  party.choice([method_parser("GET", Get), method_parser("POST", Post)])
+}
+
+fn method_parser(string: String, method: Method) -> Parser(Method, Error) {
+  use _ <- do(party.string(string))
   use _ <- do(party.whitespace1())
-  party.return(Get)
+  party.return(method)
 }
 
 fn uri() -> Parser(Uri, Error) {
@@ -61,6 +67,12 @@ fn header() -> Parser(Header, Error) {
   )
   use _ <- do(party.string("\r\n"))
   Header(name, value) |> party.return
+}
+
+fn body() -> Parser(String, Error) {
+  use _ <- do(party.string("\r\n"))
+  use body <- do(party.many_concat(party.satisfy(fn(_) { True })))
+  party.return(body)
 }
 
 pub fn from_bits(data: BitArray) -> Result(Request, party.ParseError(Error)) {

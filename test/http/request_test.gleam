@@ -28,3 +28,19 @@ pub fn non_utf8_test() {
   |> should.be_error
   |> should.equal(party.UserError(party.Position(0, 0), request.NotUTF8))
 }
+
+const post_sample = "POST /files/number HTTP/1.1\r
+Host: localhost:4221\r
+User-Agent: curl/7.64.1\r
+Accept: */*\r
+Content-Type: application/octet-stream\r
+Content-Length: 6\r
+\r
+123456"
+
+pub fn parse_post_sample_test() {
+  request.parse(post_sample)
+  |> should.be_ok
+  |> pprint.format
+  |> birdie.snap("POST Request sample")
+}
