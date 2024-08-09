@@ -1,4 +1,3 @@
-import gleam/bit_array
 import gleam/erlang/process
 import gleam/option.{None}
 import gleam/otp/actor
@@ -11,8 +10,7 @@ pub fn main() {
     glisten.handler(fn(_conn) { #(Nil, None) }, fn(msg, state, conn) {
       case msg {
         glisten.Packet(bits) -> {
-          let assert Ok(request_string) = bit_array.to_string(bits)
-          let assert Ok(request) = request.parse(request_string)
+          let assert Ok(request) = request.from_bits(bits)
 
           let status = case request.uri.path {
             "/" -> response.http200

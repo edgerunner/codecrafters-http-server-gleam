@@ -1,3 +1,4 @@
+import gleam/bit_array
 import gleam/result
 import gleam/uri.{type Uri}
 import party.{type Parser, do, try}
@@ -16,6 +17,7 @@ pub type Header {
 
 pub type Error {
   InvalidURI
+  NotUTF8
 }
 
 pub fn parse(data: String) -> Result(Request, party.ParseError(Error)) {
@@ -42,4 +44,10 @@ fn uri() -> Parser(Uri, Error) {
   )
   uri.parse(uri_string)
   |> result.replace_error(InvalidURI)
+}
+
+pub fn from_bits(data: BitArray) -> Result(Request, party.ParseError(Error)) {
+  bit_array.to_string(data)
+  |> result.replace_error(party.UserError(NotUTF8, pos: party.Position(0, 0)))
+  |> result.then(parse)
 }

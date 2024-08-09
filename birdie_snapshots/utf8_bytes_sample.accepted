@@ -1,0 +1,20 @@
+---
+version: 1.1.8
+title: UTF8 bytes sample
+file: ./test/http/request_test.gleam
+test_name: utf8_bytes_test
+---
+Request(
+  Get,
+  Uri(
+    None,
+    None,
+    None,
+    None,
+    "/index.html",
+    None,
+    None,
+  ),
+  [],
+  "",
+)
