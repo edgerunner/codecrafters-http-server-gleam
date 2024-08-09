@@ -1,4 +1,6 @@
 import gleam/bytes_builder.{type BytesBuilder}
+import gleam/int
+import gleam/string
 
 const http = "HTTP/1.1 "
 
@@ -28,8 +30,14 @@ pub fn header(
   |> bytes_builder.append_string(crlf)
 }
 
-pub fn string_body(previous: BytesBuilder, body: String) -> BytesBuilder {
+pub fn string_body(
+  previous: BytesBuilder,
+  body body: String,
+  mime mime: String,
+) -> BytesBuilder {
   previous
+  |> header("Content-Type", mime)
+  |> header("Content-Length", string.length(body) |> int.to_string)
   |> bytes_builder.append_string(crlf)
   |> bytes_builder.append_string(body)
 }

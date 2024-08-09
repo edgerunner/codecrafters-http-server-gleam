@@ -1,9 +1,9 @@
 import gleam/bytes_builder.{type BytesBuilder}
 import gleam/erlang/process
-import gleam/int
+import gleam/list
 import gleam/option.{None}
 import gleam/otp/actor
-import gleam/string
+import gleam/result
 import glisten
 import http/request.{type Request, Request}
 import http/response
@@ -34,12 +34,20 @@ pub fn router(request: Request) -> BytesBuilder {
     "/" -> response.http200() |> response.empty_body
     "/echo/" <> echo_string ->
       response.http200()
-      |> response.header("Content-Type", "text/plain")
-      |> response.header(
-        "Content-Length",
-        string.length(echo_string) |> int.to_string,
-      )
-      |> response.string_body(echo_string)
+      |> response.string_body(echo_string, "text/plain")
+    "/user-agent" -> {
+      let user_agent_string =
+        list.find_map(request.headers, fn(header) {
+          case header.name {
+            "User-Agent" -> Ok(header.value)
+            _ -> Error(Nil)
+          }
+        })
+        |> result.unwrap("")
+      response.http200()
+      |> response.string_body(user_agent_string, "text/plain")
+    }
+
     _ -> response.http404() |> response.empty_body
   }
 }

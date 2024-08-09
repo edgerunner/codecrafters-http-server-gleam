@@ -6,8 +6,7 @@ import http/response
 
 pub fn ok_response_test() {
   response.http200()
-  |> response.header("Content-Type", "text/plain")
-  |> response.string_body("Hello World!")
+  |> response.string_body("Hello World!", "text/plain")
   |> bytes_builder.to_bit_array
   |> bit_array.to_string
   |> should.be_ok
