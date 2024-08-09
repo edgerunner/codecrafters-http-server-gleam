@@ -21,11 +21,17 @@ pub fn header(
   name: String,
   value: String,
 ) -> BytesBuilder {
-  bytes_builder.append_string(previous, name <> ": " <> value <> crlf)
+  previous
+  |> bytes_builder.append_string(name)
+  |> bytes_builder.append_string(": ")
+  |> bytes_builder.append_string(value)
+  |> bytes_builder.append_string(crlf)
 }
 
 pub fn string_body(previous: BytesBuilder, body: String) -> BytesBuilder {
-  bytes_builder.append_string(previous, crlf <> body)
+  previous
+  |> bytes_builder.append_string(crlf)
+  |> bytes_builder.append_string(body)
 }
 
 pub fn empty_body(previous: BytesBuilder) {
