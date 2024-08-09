@@ -1,7 +1,9 @@
 import gleam/bytes_builder.{type BytesBuilder}
 import gleam/erlang/process
+import gleam/int
 import gleam/option.{None}
 import gleam/otp/actor
+import gleam/string
 import glisten
 import http/request.{type Request, Request}
 import http/response
@@ -30,6 +32,14 @@ pub fn main() {
 pub fn router(request: Request) -> BytesBuilder {
   case request.uri.path {
     "/" -> response.http200() |> response.empty_body
+    "/echo/" <> echo_string ->
+      response.http200()
+      |> response.header("Content-Type", "text/plain")
+      |> response.header(
+        "Content-Length",
+        string.length(echo_string) |> int.to_string,
+      )
+      |> response.string_body(echo_string)
     _ -> response.http404() |> response.empty_body
   }
 }
