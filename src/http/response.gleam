@@ -15,6 +15,10 @@ pub fn http200() -> BytesBuilder {
   preamble("200 OK")
 }
 
+pub fn http201() -> BytesBuilder {
+  preamble("201 Created")
+}
+
 pub fn http404() -> BytesBuilder {
   preamble("404 Not Found")
 }

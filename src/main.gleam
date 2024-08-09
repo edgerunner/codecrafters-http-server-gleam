@@ -7,7 +7,7 @@ import gleam/option.{None}
 import gleam/otp/actor
 import gleam/result
 import glisten
-import http/request.{type Request, Request}
+import http/request.{type Request, Get, Post, Request}
 import http/response
 
 pub fn main() {
@@ -37,12 +37,12 @@ pub fn main() {
 }
 
 pub fn router(request: Request, directory: String) -> BytesBuilder {
-  case request.uri.path {
-    "/" -> response.http200() |> response.empty_body
-    "/echo/" <> echo_string ->
+  case request.method, request.uri.path {
+    Get, "/" -> response.http200() |> response.empty_body
+    Get, "/echo/" <> echo_string ->
       response.http200()
       |> response.string_body(echo_string, "text/plain")
-    "/user-agent" -> {
+    Get, "/user-agent" -> {
       let user_agent_string =
         list.find_map(request.headers, fn(header) {
           case header.name {
@@ -54,7 +54,7 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
       response.http200()
       |> response.string_body(user_agent_string, "text/plain")
     }
-    "/files/" <> filename -> {
+    Get, "/files/" <> filename -> {
       case file_stream.open_read(directory <> filename) {
         Ok(fs) -> {
           let assert Ok(end) =
@@ -71,6 +71,13 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
       }
     }
 
-    _ -> response.http404() |> response.empty_body
+    Post, "/files/" <> filename -> {
+      let assert Ok(fs) = file_stream.open_write(directory <> filename)
+      let assert Ok(_) = file_stream.write_chars(fs, request.body)
+      let assert Ok(_) = file_stream.close(fs)
+      response.http201() |> response.empty_body
+    }
+
+    _, _ -> response.http404() |> response.empty_body
   }
 }
