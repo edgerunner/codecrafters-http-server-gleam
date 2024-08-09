@@ -28,7 +28,8 @@ fn http_request() -> Parser(Request, Error) {
   use method <- do(method())
   use uri <- do(uri())
   use _ <- do(party.string(" HTTP/1.1\r\n"))
-  Request(method: method, uri: uri, headers: [], body: "")
+  use headers <- do(headers())
+  Request(method: method, uri: uri, headers: headers, body: "")
   |> party.return
 }
 
@@ -44,6 +45,22 @@ fn uri() -> Parser(Uri, Error) {
   )
   uri.parse(uri_string)
   |> result.replace_error(InvalidURI)
+}
+
+fn headers() -> Parser(List(Header), Error) {
+  use list <- do(party.many1(header()))
+  party.return(list)
+}
+
+fn header() -> Parser(Header, Error) {
+  use name <- do(party.satisfy(fn(ch) { ch != ":" }) |> party.many1_concat())
+  use _ <- do(party.string(":"))
+  use _ <- do(party.whitespace())
+  use value <- do(
+    party.satisfy(fn(ch) { ch != "\r\n" }) |> party.many1_concat(),
+  )
+  use _ <- do(party.string("\r\n"))
+  Header(name, value) |> party.return
 }
 
 pub fn from_bits(data: BitArray) -> Result(Request, party.ParseError(Error)) {

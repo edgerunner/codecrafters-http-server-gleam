@@ -5,7 +5,7 @@ import http/request
 import party
 import pprint
 
-const sample = "GET /index.html HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: curl/7.64.1\r\nAccept: */*\r\n\r\n"
+const sample = "GET /index.html HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: curl/7.64.1\r\nAccept: */*\r\n\r\nHello World!"
 
 pub fn parse_sample_test() {
   request.parse(sample)
