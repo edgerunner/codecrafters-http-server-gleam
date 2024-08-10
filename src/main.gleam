@@ -1,8 +1,8 @@
 import argv
 import file_streams/file_stream
 import gleam/bytes_builder.{type BytesBuilder}
+import gleam/dict
 import gleam/erlang/process
-import gleam/list
 import gleam/option.{None}
 import gleam/otp/actor
 import gleam/result
@@ -44,12 +44,7 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
       |> response.string_body(echo_string, "text/plain")
     Get, "/user-agent" -> {
       let user_agent_string =
-        list.find_map(request.headers, fn(header) {
-          case header.name {
-            "User-Agent" -> Ok(header.value)
-            _ -> Error(Nil)
-          }
-        })
+        dict.get(request.headers, "User-Agent")
         |> result.unwrap("")
       response.http200()
       |> response.string_body(user_agent_string, "text/plain")

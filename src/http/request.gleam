@@ -1,19 +1,16 @@
 import gleam/bit_array
+import gleam/dict.{type Dict}
 import gleam/result
 import gleam/uri.{type Uri}
 import party.{type Parser, do, try}
 
 pub type Request {
-  Request(method: Method, uri: Uri, headers: List(Header), body: String)
+  Request(method: Method, uri: Uri, headers: Dict(String, String), body: String)
 }
 
 pub type Method {
   Get
   Post
-}
-
-pub type Header {
-  Header(name: String, value: String)
 }
 
 pub type Error {
@@ -53,12 +50,13 @@ fn uri() -> Parser(Uri, Error) {
   |> result.replace_error(InvalidURI)
 }
 
-fn headers() -> Parser(List(Header), Error) {
+fn headers() -> Parser(Dict(String, String), Error) {
   use list <- do(party.many1(header()))
-  party.return(list)
+  dict.from_list(list)
+  |> party.return
 }
 
-fn header() -> Parser(Header, Error) {
+fn header() -> Parser(#(String, String), Error) {
   use name <- do(party.satisfy(fn(ch) { ch != ":" }) |> party.many1_concat())
   use _ <- do(party.string(":"))
   use _ <- do(party.whitespace())
@@ -66,7 +64,7 @@ fn header() -> Parser(Header, Error) {
     party.satisfy(fn(ch) { ch != "\r\n" }) |> party.many1_concat(),
   )
   use _ <- do(party.string("\r\n"))
-  Header(name, value) |> party.return
+  #(name, value) |> party.return
 }
 
 fn body() -> Parser(String, Error) {

@@ -15,15 +15,12 @@ Request(
     None,
     None,
   ),
-  [
-    Header("Host", "localhost:4221"),
-    Header("User-Agent", "curl/7.64.1"),
-    Header("Accept", "*/*"),
-    Header(
-      "Content-Type",
-      "application/octet-stream",
-    ),
-    Header("Content-Length", "6"),
-  ],
+  dict.from_list([
+    #("Accept", "*/*"),
+    #("Content-Length", "6"),
+    #("Content-Type", "application/octet-stream"),
+    #("Host", "localhost:4221"),
+    #("User-Agent", "curl/7.64.1"),
+  ]),
   "123456",
 )

@@ -15,10 +15,10 @@ Request(
     None,
     None,
   ),
-  [
-    Header("Host", "localhost:4221"),
-    Header("User-Agent", "curl/7.64.1"),
-    Header("Accept", "*/*"),
-  ],
+  dict.from_list([
+    #("Accept", "*/*"),
+    #("Host", "localhost:4221"),
+    #("User-Agent", "curl/7.64.1"),
+  ]),
   "Hello World!",
 )
