@@ -3,9 +3,11 @@ import file_streams/file_stream
 import gleam/bytes_builder.{type BytesBuilder}
 import gleam/dict
 import gleam/erlang/process
+import gleam/list
 import gleam/option.{None}
 import gleam/otp/actor
 import gleam/result
+import gleam/string
 import glisten
 import http/request.{type Request, Get, Post, Request}
 import http/response
@@ -41,16 +43,13 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
     Get, "/" -> response.http200() |> response.empty_body
     Get, "/echo/" <> echo_string ->
       response.http200()
-      |> case dict.get(request.headers, "Accept-Encoding") {
-        Ok("gzip") -> response.gzipped_string_body(_, echo_string, "text/plain")
-        _ -> response.string_body(_, echo_string, "text/plain")
-      }
+      |> encoded_body(request)(echo_string, "text/plain")
     Get, "/user-agent" -> {
       let user_agent_string =
         dict.get(request.headers, "User-Agent")
         |> result.unwrap("")
       response.http200()
-      |> response.string_body(user_agent_string, "text/plain")
+      |> encoded_body(request)(user_agent_string, "text/plain")
     }
     Get, "/files/" <> filename -> {
       case file_stream.open_read(directory <> filename) {
@@ -78,4 +77,14 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
 
     _, _ -> response.http404() |> response.empty_body
   }
+}
+
+fn encoded_body(
+  request: Request,
+) -> fn(BytesBuilder, String, String) -> BytesBuilder {
+  dict.get(request.headers, "Accept-Encoding")
+  |> result.map(string.split(_, on: ", "))
+  |> result.then(list.find(_, fn(c) { c == "gzip" }))
+  |> result.replace(response.gzipped_string_body)
+  |> result.unwrap(response.string_body)
 }
