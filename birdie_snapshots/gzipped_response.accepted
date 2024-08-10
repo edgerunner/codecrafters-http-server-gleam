@@ -1,0 +1,60 @@
+---
+version: 1.1.8
+title: GZipped response
+file: ./test/http/response_test.gleam
+test_name: gzipped_response_test
+---
+[
+  [
+    [
+      [
+        [
+          [
+            [
+              [
+                [
+                  [
+                    [
+                      [
+                        [
+                          [
+                            [
+                              "HTTP/1.1 200 OK
+",
+                            ],
+                            [
+                              "Content-Encoding",
+                            ],
+                          ],
+                          [": "],
+                        ],
+                        ["gzip"],
+                      ],
+                      ["
+"],
+                    ],
+                    ["Content-Type"],
+                  ],
+                  [": "],
+                ],
+                ["text/plain"],
+              ],
+              ["
+"],
+            ],
+            ["Content-Length"],
+          ],
+          [": "],
+        ],
+        ["32"],
+      ],
+      ["
+"],
+    ],
+    ["
+"],
+  ],
+  [
+    <<31, 139, 8, 0, 0, 0, 0, 0, 0, 19, 243, 72, 205, 201, 201, 87, 8, 207, 47, 202, 73, 81, 4, 0, 163, 28, 41, 28, 12, 0, 0, 0>>,
+  ],
+]

@@ -3,6 +3,7 @@ import glacier/should
 import gleam/bit_array
 import gleam/bytes_builder
 import http/response
+import pprint
 
 pub fn ok_response_test() {
   response.http200()
@@ -20,4 +21,11 @@ pub fn notfound_response_test() {
   |> bit_array.to_string
   |> should.be_ok
   |> birdie.snap("404 Not Found response")
+}
+
+pub fn gzipped_response_test() {
+  response.http200()
+  |> response.gzipped_string_body("Hello World!", "text/plain")
+  |> pprint.format
+  |> birdie.snap("GZipped response")
 }

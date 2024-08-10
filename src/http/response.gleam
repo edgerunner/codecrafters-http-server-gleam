@@ -52,12 +52,14 @@ pub fn gzipped_string_body(
   body body: String,
   mime mime: String,
 ) -> BytesBuilder {
+  let gzipped = body |> bit_array.from_string |> gzip
+
   previous
   |> header("Content-Encoding", "gzip")
   |> header("Content-Type", mime)
-  |> header("Content-Length", string.length(body) |> int.to_string)
+  |> header("Content-Length", bit_array.byte_size(gzipped) |> int.to_string)
   |> bytes_builder.append_string(crlf)
-  |> bytes_builder.append_string(body)
+  |> bytes_builder.append(gzipped)
 }
 
 pub fn bytes_body(
@@ -75,3 +77,6 @@ pub fn bytes_body(
 pub fn empty_body(previous: BytesBuilder) {
   bytes_builder.append_string(previous, crlf)
 }
+
+@external(erlang, "zlib", "gzip")
+fn gzip(data: BitArray) -> BitArray
