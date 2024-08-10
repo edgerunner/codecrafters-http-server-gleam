@@ -47,6 +47,19 @@ pub fn string_body(
   |> bytes_builder.append_string(body)
 }
 
+pub fn gzipped_string_body(
+  previous: BytesBuilder,
+  body body: String,
+  mime mime: String,
+) -> BytesBuilder {
+  previous
+  |> header("Content-Encoding", "gzip")
+  |> header("Content-Type", mime)
+  |> header("Content-Length", string.length(body) |> int.to_string)
+  |> bytes_builder.append_string(crlf)
+  |> bytes_builder.append_string(body)
+}
+
 pub fn bytes_body(
   previous: BytesBuilder,
   body body: BitArray,

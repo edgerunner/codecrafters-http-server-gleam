@@ -41,7 +41,10 @@ pub fn router(request: Request, directory: String) -> BytesBuilder {
     Get, "/" -> response.http200() |> response.empty_body
     Get, "/echo/" <> echo_string ->
       response.http200()
-      |> response.string_body(echo_string, "text/plain")
+      |> case dict.get(request.headers, "Accept-Encoding") {
+        Ok("gzip") -> response.gzipped_string_body(_, echo_string, "text/plain")
+        _ -> response.string_body(_, echo_string, "text/plain")
+      }
     Get, "/user-agent" -> {
       let user_agent_string =
         dict.get(request.headers, "User-Agent")
